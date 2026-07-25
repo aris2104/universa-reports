@@ -17,10 +17,10 @@
 </p>
 
 <p align="center">
-  Created with ❤️ by [VOTRE_NOM](https://github.com/aris2104)
+  Created with passion by Bimam KPESS (https://github.com/aris2104)
 </p>
 
-## 🚀 Features
+##  Features
 
 - **Multi-Purpose**: Generate reports for internships, lab work (TP), and final projects.
 - **Field-Specific**: Comes with tailored templates for Cybersecurity, Development, Biology, Law, Marketing, and more.
