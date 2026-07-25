@@ -1,0 +1,38 @@
+{
+  "name": "universa-reports",
+  "version": "1.0.0",
+  "description": "The ultimate CLI tool for generating professional academic reports (internships, lab work, projects) automatically.",
+  "main": "bin/index.js",
+  "bin": {
+    "universa-reports": "bin/index.js"
+  },
+  "scripts": {
+    "start": "node bin/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aris2104/universa-reports.git"
+  },
+  "keywords": [
+    "cli",
+    "report-generator",
+    "academic-reports",
+    "pdf-generator",
+    "python",
+    "jinja2",
+    "weasyprint",
+    "automation",
+    "BIMAM KPESS",
+    "PEPEIRA ARISTIDE"
+  ],
+  "author": "PEPEIRA ARISTIDE BIMAM KPESS <aristokpess@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aris2104/universa-reports/issues"
+  },
+  "homepage": "https://github.com/aris2104/universa-reports#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

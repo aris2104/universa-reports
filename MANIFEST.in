@@ -1,0 +1,2 @@
+recursive-include python-src/templates *.html
+recursive-include python-src/assets *.css

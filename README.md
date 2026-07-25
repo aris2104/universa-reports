@@ -1,0 +1,38 @@
+# Universa Reports
+
+<p align="center">
+  <a href="https://github.com/aris2104/universa-reports">
+    <img src="https://img.shields.io/github/stars/VOTRE_PSEUDO/universa-reports?style=social" alt="GitHub Stars">
+  </a>
+  <a href="https://github.com/aris2104/universa-reports/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/aris2104/universa-reports" alt="License">
+  </a>
+  <a href="https://www.npmjs.com/package/universa-reports">
+    <img src="https://img.shields.io/npm/v/universa-reports" alt="NPM Version">
+  </a>
+</p>
+
+<p align="center">
+  <strong>The ultimate CLI tool to automatically generate professional academic reports.</strong>
+</p>
+
+<p align="center">
+  Created with ❤️ by [VOTRE_NOM](https://github.com/aris2104)
+</p>
+
+## 🚀 Features
+
+- **Multi-Purpose**: Generate reports for internships, lab work (TP), and final projects.
+- **Field-Specific**: Comes with tailored templates for Cybersecurity, Development, Biology, Law, Marketing, and more.
+- **Interactive CLI**: A beautiful, user-friendly command-line interface powered by `rich`.
+- **Professional PDF Output**: Generates clean, well-structured PDFs ready for submission.
+- **Easy Installation**: Available on npm for a seamless, cross-platform setup.
+
+## 📦 Installation
+
+**Prerequisites:** Make sure you have [Node.js](https://nodejs.org/) (v14 or higher) and [Python 3](https://www.python.org/downloads/) installed on your system.
+
+Install Universa Reports globally using npm:
+
+```bash
+npm install -g universa-reports

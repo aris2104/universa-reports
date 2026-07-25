@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Compte-rendu de TP — Cybersécurité — {{ tp_title | default("Titre du TP") }}</title>
+<link rel="stylesheet" href="{{ styles_path | default('../../assets/styles.css') }}">
+</head>
+<body class="domain-cybersecurite">
+
+<div class="sheet">
+  <div class="dossier-tab">Cybersécurité</div>
+
+  <!-- ============================= PAGE DE GARDE ============================= -->
+  <section class="cover">
+    <div class="eyebrow">Compte-rendu de travaux pratiques · Cybersécurité</div>
+    <h1>{{ tp_title | default("Analyse de vulnérabilités et durcissement système") }}</h1>
+    <p class="subtitle">{{ tp_subtitle | default("Module : " ~ (module_name | default("Sécurité des systèmes et des réseaux"))) }}</p>
+
+    <dl class="cover-meta">
+      <div><dt>Étudiant(e)</dt><dd>{{ student_name | default("Prénom Nom") }}</dd></div>
+      <div><dt>Groupe</dt><dd>{{ group_name | default("Groupe / binôme") }}</dd></div>
+      <div><dt>Formation</dt><dd>{{ student_formation | default("Cybersécurité et défense des systèmes") }}</dd></div>
+      <div><dt>Établissement</dt><dd>{{ student_school | default("Nom de l'établissement") }}</dd></div>
+
+      <div><dt>Enseignant / encadrant</dt><dd>{{ supervisor_name | default("Nom de l'enseignant") }}</dd></div>
+      <div><dt>Date de séance</dt><dd>{{ session_date | default("JJ/MM/AAAA") }}</dd></div>
+      <div><dt>Durée de la séance</dt><dd>{{ duration_label | default("X heures") }}</dd></div>
+      <div><dt>Environnement</dt><dd>{{ location | default("Laboratoire / lab virtuel isolé") }}</dd></div>
+    </dl>
+  </section>
+
+  <!-- ============================= CORPS DU COMPTE-RENDU ============================= -->
+  <div class="content">
+
+    <div class="callout">
+      <span class="callout-label">Cadre d'exécution</span>
+      {{ scope_notice | default("Manipulations réalisées exclusivement dans un environnement de laboratoire isolé, sur des cibles autorisées, dans le cadre strict du cursus pédagogique.") }}
+    </div>
+
+    <h2 class="section-title"><span class="num">01</span>Objectifs du TP</h2>
+    <p>{{ objectives_intro | default("Objectifs pédagogiques et techniques visés par cette séance de travaux pratiques en cybersécurité.") }}</p>
+    <ul class="report-list">
+      {% for objective in objectives | default(["Identifier les vulnérabilités présentes sur une machine cible de laboratoire.", "Qualifier la criticité des failles selon une échelle standard (CVSS).", "Proposer et appliquer des mesures de remédiation adaptées."]) %}
+      <li>{{ objective }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2 class="section-title"><span class="num">02</span>Environnement technique</h2>
+    <ul class="report-list">
+      {% for item in materials | default(["Machine virtuelle cible isolée du réseau de production.", "Scanner de vulnérabilités (Nessus / OpenVAS).", "Poste d'attaque de laboratoire configuré pour la séance."]) %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2 class="section-title"><span class="num">03</span>Démarche suivie</h2>
+    {% if steps %}
+    <ol class="report-list" style="list-style: none;">
+      {% for step in steps %}
+      <li style="padding-left: 0;"><strong>Étape {{ loop.index }}.</strong> {{ step }}</li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <ol class="report-list" style="list-style: none;">
+      <li style="padding-left: 0;"><strong>Étape 1.</strong> Cartographie du périmètre et identification des services exposés.</li>
+      <li style="padding-left: 0;"><strong>Étape 2.</strong> Lancement d'une campagne d'analyse de vulnérabilités sur le périmètre défini.</li>
+      <li style="padding-left: 0;"><strong>Étape 3.</strong> Qualification et priorisation des failles identifiées.</li>
+      <li style="padding-left: 0;"><strong>Étape 4.</strong> Rédaction des préconisations de remédiation.</li>
+    </ol>
+    {% endif %}
+
+    {% if code_sample %}
+    <h3 class="sub-title">{{ code_sample.title | default("Extrait de commande / configuration") }}</h3>
+    <div class="code-block">{{ code_sample.content }}</div>
+    {% endif %}
+
+    <h2 class="section-title"><span class="num">04</span>Résultats — vulnérabilités identifiées</h2>
+    {% if risk_matrix %}
+    <table class="data-table">
+      <thead>
+        <tr><th>Actif / service</th><th>Vulnérabilité</th><th>Criticité (CVSS)</th><th>Remédiation proposée</th></tr>
+      </thead>
+      <tbody>
+        {% for risk in risk_matrix %}
+        <tr>
+          <td>{{ risk.asset }}</td>
+          <td>{{ risk.threat }}</td>
+          <td>{{ risk.severity }}</td>
+          <td>{{ risk.remediation }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <table class="data-table">
+      <thead>
+        <tr><th>Actif / service</th><th>Vulnérabilité</th><th>Criticité (CVSS)</th><th>Remédiation proposée</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Serveur web (port 80/443)</td><td>Version obsolète du serveur HTTP</td><td>Élevée</td><td>Mise à jour et durcissement de la configuration TLS.</td></tr>
+        <tr><td>Service d'administration distante</td><td>Authentification faible</td><td>Critique</td><td>Mise en place d'une authentification multi-facteurs.</td></tr>
+      </tbody>
+    </table>
+    {% endif %}
+
+    <h2 class="section-title"><span class="num">05</span>Analyse et discussion</h2>
+    <p>{{ analysis_text | default("Interprétation des résultats obtenus : analyse de la surface d'exposition, hiérarchisation des risques selon leur impact potentiel et leur probabilité d'exploitation, et mise en perspective avec les référentiels de sécurité (ANSSI, CIS Benchmarks).") }}</p>
+
+    {% if difficulties %}
+    <h2 class="section-title"><span class="num">06</span>Difficultés rencontrées</h2>
+    <ul class="report-list">
+      {% for item in difficulties %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2 class="section-title"><span class="num">{{ conclusion_number | default("07") }}</span>Conclusion</h2>
+    <p>{{ conclusion_text | default("Cette séance de travaux pratiques a permis de mettre en application une démarche complète d'analyse de vulnérabilités, de la découverte à la remédiation. Elle a renforcé la compréhension des mécanismes de défense en profondeur et l'importance d'une hiérarchisation rigoureuse des risques.") }}</p>
+
+  </div>
+
+  <div class="footer">
+    <span>Compte-rendu de TP · Cybersécurité — {{ student_name | default("Prénom Nom") }}</span>
+    <span>Généré avec Universa Reports · {{ generated_date | default("JJ/MM/AAAA") }}</span>
+  </div>
+</div>
+
+</body>
+</html>

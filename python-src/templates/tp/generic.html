@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default('fr') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm 20mm 15mm;
+            @bottom-right {
+                content: "Généré avec Universa Reports";
+                font-size: 8pt;
+                color: #718096;
+            }
+            @bottom-left {
+                content: "Compte-rendu de TP — {{ student_name }}";
+                font-size: 8pt;
+                color: #718096;
+            }
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #2d3748;
+            line-height: 1.5;
+            font-size: 10pt;
+        }
+
+        /* HEADER & TITRE */
+        .header-tag {
+            background-color: #f0fff4;
+            color: #276749;
+            display: inline-block;
+            padding: 4px 12px;
+            font-weight: bold;
+            font-size: 9pt;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid #c6f6d5;
+        }
+
+        h1 {
+            color: #1a202c;
+            font-size: 20pt;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 11pt;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+
+        /* CARTOUCHE D'INFORMATIONS */
+        .info-grid {
+            display: table;
+            width: 100%;
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 25px;
+        }
+
+        .info-row {
+            display: table-row;
+        }
+
+        .info-cell {
+            display: table-cell;
+            padding: 5px 10px;
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .info-label {
+            font-size: 7.5pt;
+            font-weight: bold;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .info-value {
+            font-size: 9.5pt;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        /* SECTIONS DU TP */
+        .section-num {
+            color: #2f855a;
+            font-size: 13pt;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .section-title {
+            font-size: 11.5pt;
+            font-weight: bold;
+            color: #1a202c;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 4px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+
+        .tp-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #38a169;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        ul {
+            margin: 5px 0 12px 18px;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        .conclusion-box {
+            background-color: #f0fff4;
+            border: 1px solid #c6f6d5;
+            padding: 12px;
+            border-radius: 6px;
+            font-style: italic;
+            color: #22543d;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENTÊTE -->
+    <div class="header-tag">COMPTE-RENDU DE TRAVAUX PRATIQUES · {{ domain | upper }}</div>
+    <h1>{{ title }}</h1>
+    <div class="subtitle">Module : <strong>{{ module_name | default(domain) }}</strong></div>
+
+    <!-- CARTOUCHE D'INFORMATIONS -->
+    <div class="info-grid">
+        <div class="info-row">
+            <div class="info-cell">
+                <span class="info-label">Étudiant(e)</span>
+                <span class="info-value">{{ student_name }}</span>
+            </div>
+            <div class="info-cell">
+                <span class="info-label">Groupe / Binôme</span>
+                <span class="info-value">{{ group_name | default('Binôme / Individuel') }}</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-cell">
+                <span class="info-label">Formation</span>
+                <span class="info-value">{{ domain }}</span>
+            </div>
+            <div class="info-cell">
+                <span class="info-label">Établissement</span>
+                <span class="info-value">{{ institution }}</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-cell">
+                <span class="info-label">Enseignant / Encadrant</span>
+                <span class="info-value">{{ supervisor_name }}</span>
+            </div>
+            <div class="info-cell">
+                <span class="info-label">Lieu / Salle</span>
+                <span class="info-value">{{ room_name | default('Laboratoire TP') }}</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-cell">
+                <span class="info-label">Durée de la séance</span>
+                <span class="info-value">{{ session_duration | default('2 heures') }}</span>
+            </div>
+            <div class="info-cell">
+                <span class="info-label">Date de séance</span>
+                <span class="info-value">{{ session_date | default('Séance courante') }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 01 OBJECTIFS -->
+    <div class="section-title"><span class="section-num">01</span>Objectifs du TP</div>
+    <p>Objectifs pédagogiques et techniques visés par cette séance de travaux pratiques :</p>
+    <ul>
+        <li>Objectif pédagogique n°1 : Prise en main de l'environnement de travail.</li>
+        <li>Objectif pédagogique n°2 : Application des concepts théoriques étudiés en cours.</li>
+        <li>Objectif pédagogique n°3 : Validation expérimentale et interprétation des métriques.</li>
+    </ul>
+
+    <!-- 02 MATÉRIEL ET ENVIRONNEMENT -->
+    <div class="section-title"><span class="section-num">02</span>Matériel et environnement</div>
+    <div class="tp-box">
+        Liste du matériel, des logiciels, des jeux de données ou de l'environnement utilisés pour réaliser le TP (ex: machines virtuelles, scanners, compilateurs, etc.).
+    </div>
+
+    <!-- 03 PROTOCOLE -->
+    <div class="section-title"><span class="section-num">03</span>Protocole / Démarche suivie</div>
+    <p>Description pas à pas de la méthode ou du protocole suivi pendant la séance :</p>
+    <ul>
+        <li><strong>Étape 1 :</strong> Configuration initiale de l'environnement et vérification des prérequis.</li>
+        <li><strong>Étape 2 :</strong> Exécution des commandes et des tests de manipulation.</li>
+        <li><strong>Étape 3 :</strong> Collecte des journaux (logs) et des captures de résultats.</li>
+    </ul>
+
+    <!-- 04 RÉSULTATS -->
+    <div class="section-title"><span class="section-num">04</span>Résultats obtenus</div>
+    <p>Présentation factuelle des résultats obtenus lors de la manipulation ou de l'expérimentation.</p>
+
+    <!-- 05 ANALYSE ET DISCUSSION -->
+    <div class="section-title"><span class="section-num">05</span>Analyse et discussion</div>
+    <p>Interprétation des résultats obtenus, écarts éventuels par rapport aux attentes, et explication des causes possibles.</p>
+
+    <!-- 07 CONCLUSION -->
+    <div class="section-title"><span class="section-num">07</span>Conclusion</div>
+    <div class="conclusion-box">
+        Bilan de la séance : les objectifs principaux ont été atteints. Cette séance a permis de mobiliser des compétences pratiques et de consolider les acquis théoriques pour la suite du parcours de formation.
+    </div>
+
+</body>
+</html>

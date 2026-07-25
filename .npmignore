@@ -1,0 +1,13 @@
+# Cache & Builds Python
+__pycache__/
+*.pyc
+build/
+dist/
+*.egg-info/
+
+# Builds NPM
+*.tgz
+node_modules/
+
+# Sorties de tests
+*.pdf

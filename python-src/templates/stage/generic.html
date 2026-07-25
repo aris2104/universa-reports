@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Rapport de stage — {{ student_name | default("Prénom Nom") }}</title>
+<link rel="stylesheet" href="{{ styles_path | default('../../assets/styles.css') }}">
+</head>
+<body class="domain-{{ domain_slug | default('generique') }}">
+
+<div class="sheet">
+  <div class="dossier-tab">{{ domain_label | default('Rapport de stage') }}</div>
+
+  <!-- ============================= PAGE DE GARDE ============================= -->
+  <section class="cover">
+    <div class="eyebrow">{{ report_type_label | default("Rapport de stage") }} · {{ domain_label | default("") }}</div>
+    <h1>{{ report_title | default("Rapport de stage") }}</h1>
+    <p class="subtitle">{{ report_subtitle | default("Réalisé au sein de " ~ (company_name | default("{{ company_name }}"))) }}</p>
+
+    <dl class="cover-meta">
+      <div><dt>Étudiant(e)</dt><dd>{{ student_name | default("Prénom Nom") }}</dd></div>
+      <div><dt>Formation</dt><dd>{{ student_formation | default("Intitulé de la formation") }}</dd></div>
+      <div><dt>Établissement</dt><dd>{{ student_school | default("Nom de l'établissement") }}</dd></div>
+      <div><dt>Année académique</dt><dd>{{ academic_year | default("2025 – 2026") }}</dd></div>
+
+      <div><dt>Structure d'accueil</dt><dd>{{ company_name | default("{{ company_name }}") }}</dd></div>
+      <div><dt>Secteur d'activité</dt><dd>{{ company_sector | default("Secteur d'activité") }}</dd></div>
+      <div><dt>Tuteur professionnel</dt><dd>{{ tutor_name | default("Nom du tuteur") }}{% if tutor_title %}, {{ tutor_title }}{% endif %}</dd></div>
+      <div><dt>Tuteur académique</dt><dd>{{ academic_tutor_name | default("Nom du tuteur académique") }}</dd></div>
+
+      <div><dt>Période de stage</dt><dd>{{ period_start | default("JJ/MM/AAAA") }} – {{ period_end | default("JJ/MM/AAAA") }}</dd></div>
+      <div><dt>Durée</dt><dd>{{ duration_label | default("X semaines") }}</dd></div>
+    </dl>
+  </section>
+
+  <!-- ============================= CORPS DU RAPPORT ============================= -->
+  <div class="content">
+
+    <h2 class="section-title"><span class="num">01</span>Présentation de la structure d'accueil</h2>
+    <p>{{ company_description | default("Description générale de l'entreprise ou de l'organisme d'accueil : activité, taille, positionnement, organisation du service dans lequel le stage s'est déroulé.") }}</p>
+    {% if company_context %}
+    <div class="callout">
+      <span class="callout-label">Contexte</span>
+      {{ company_context }}
+    </div>
+    {% endif %}
+
+    <h2 class="section-title"><span class="num">02</span>Objectifs du stage</h2>
+    <p>{{ objectives_intro | default("Objectifs fixés au début du stage, en cohérence avec la formation suivie et les attentes de la structure d'accueil.") }}</p>
+    {% if objectives %}
+    <ul class="report-list">
+      {% for objective in objectives %}
+      <li>{{ objective }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2 class="section-title"><span class="num">03</span>Missions réalisées</h2>
+    {% if missions %}
+      {% for mission in missions %}
+      <div class="mission-card">
+        <div class="mission-title">{{ mission.title }}</div>
+        {% if mission.period %}<div class="mission-period">{{ mission.period }}</div>{% endif %}
+        <p>{{ mission.description }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="mission-card">
+      <div class="mission-title">Intitulé de la mission</div>
+      <div class="mission-period">Période</div>
+      <p>Description détaillée de la mission confiée, du contexte, des actions menées et du résultat obtenu.</p>
+    </div>
+    {% endif %}
+
+    <h2 class="section-title"><span class="num">04</span>Méthodes et outils mobilisés</h2>
+    {% if tools %}
+    <ul class="report-list">
+      {% for tool in tools %}
+      <li>{{ tool }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>Liste des méthodes, référentiels ou outils utilisés au cours du stage (logiciels, méthodologies, procédures internes, etc.).</p>
+    {% endif %}
+
+    <h2 class="section-title"><span class="num">05</span>Compétences développées</h2>
+    <div class="two-col">
+      <div>
+        <h3 class="sub-title">Compétences techniques</h3>
+        <ul class="report-list">
+          {% for skill in skills_technical | default(["Compétence technique n°1", "Compétence technique n°2", "Compétence technique n°3"]) %}
+          <li>{{ skill }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <h3 class="sub-title">Compétences relationnelles et méthodologiques</h3>
+        <ul class="report-list">
+          {% for skill in skills_soft | default(["Communication au sein d'une équipe pluridisciplinaire.", "Organisation et gestion des priorités.", "Adaptation à un nouvel environnement professionnel."]) %}
+          <li>{{ skill }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    {% if difficulties %}
+    <h2 class="section-title"><span class="num">06</span>Difficultés rencontrées et solutions apportées</h2>
+    <ul class="report-list">
+      {% for item in difficulties %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% for custom in custom_sections | default([]) %}
+    <h2 class="section-title"><span class="num">{{ "%02d" | format(7 + loop.index0) }}</span>{{ custom.title }}</h2>
+    <p>{{ custom.content }}</p>
+    {% endfor %}
+
+    <h2 class="section-title"><span class="num">{{ conclusion_number | default("07") }}</span>Conclusion</h2>
+    <p>{{ conclusion_text | default("Bilan du stage chez " ~ (company_name | default("{{ company_name }}")) ~ " : apports professionnels et personnels, mise en perspective avec le projet de formation et les projets futurs de l'étudiant(e).") }}</p>
+
+  </div>
+
+  <div class="footer">
+    <span>{{ report_type_label | default("Rapport de stage") }} — {{ student_name | default("Prénom Nom") }}</span>
+    <span>Généré avec Universa Reports · {{ generated_date | default("JJ/MM/AAAA") }}</span>
+  </div>
+</div>
+
+</body>
+</html>
