@@ -11,3 +11,5 @@ node_modules/
 
 # Sorties de tests
 *.pdf
+debug_save_html.py
+run_test_generate.py

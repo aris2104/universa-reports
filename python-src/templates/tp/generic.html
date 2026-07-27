@@ -1,230 +1,214 @@
 <!DOCTYPE html>
 <html lang="{{ lang | default('fr') }}">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-    <style>
-        @page {
-            size: A4;
-            margin: 20mm 15mm 20mm 15mm;
-            @bottom-right {
-                content: "Généré avec Universa Reports";
-                font-size: 8pt;
-                color: #718096;
-            }
-            @bottom-left {
-                content: "Compte-rendu de TP — {{ student_name }}";
-                font-size: 8pt;
-                color: #718096;
-            }
-        }
-
-        body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
-            color: #2d3748;
-            line-height: 1.5;
-            font-size: 10pt;
-        }
-
-        /* HEADER & TITRE */
-        .header-tag {
-            background-color: #f0fff4;
-            color: #276749;
-            display: inline-block;
-            padding: 4px 12px;
-            font-weight: bold;
-            font-size: 9pt;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 1px solid #c6f6d5;
-        }
-
-        h1 {
-            color: #1a202c;
-            font-size: 20pt;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            font-size: 11pt;
-            color: #4a5568;
-            margin-bottom: 20px;
-        }
-
-        /* CARTOUCHE D'INFORMATIONS */
-        .info-grid {
-            display: table;
-            width: 100%;
-            background-color: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 25px;
-        }
-
-        .info-row {
-            display: table-row;
-        }
-
-        .info-cell {
-            display: table-cell;
-            padding: 5px 10px;
-            vertical-align: top;
-            width: 50%;
-        }
-
-        .info-label {
-            font-size: 7.5pt;
-            font-weight: bold;
-            color: #718096;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: block;
-        }
-
-        .info-value {
-            font-size: 9.5pt;
-            font-weight: bold;
-            color: #2d3748;
-        }
-
-        /* SECTIONS DU TP */
-        .section-num {
-            color: #2f855a;
-            font-size: 13pt;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-
-        .section-title {
-            font-size: 11.5pt;
-            font-weight: bold;
-            color: #1a202c;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 4px;
-            margin-top: 18px;
-            margin-bottom: 10px;
-        }
-
-        .tp-box {
-            background-color: #f8fafc;
-            border-left: 4px solid #38a169;
-            padding: 10px 12px;
-            margin-bottom: 12px;
-            border-radius: 0 4px 4px 0;
-        }
-
-        ul {
-            margin: 5px 0 12px 18px;
-            padding: 0;
-        }
-
-        li {
-            margin-bottom: 4px;
-        }
-
-        .conclusion-box {
-            background-color: #f0fff4;
-            border: 1px solid #c6f6d5;
-            padding: 12px;
-            border-radius: 6px;
-            font-style: italic;
-            color: #22543d;
-            margin-top: 15px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>{{ title | default("Compte-rendu de TP — " ~ (domain_label | default(domain | default("Générique"))) ~ " — " ~ (student_name | default("Étudiant"))) }}</title>
+  {% if styles_inline %}
+  <style>{{ styles_inline | safe }}</style>
+  {% else %}
+  <link rel="stylesheet" href="{{ styles_path | default(css_path | default('../../assets/styles.css')) }}">
+  {% endif %}
 </head>
-<body>
+<body class="domain-{{ domain_slug | default('generique') }}">
 
-    <!-- ENTÊTE -->
-    <div class="header-tag">COMPTE-RENDU DE TRAVAUX PRATIQUES · {{ domain | upper }}</div>
-    <h1>{{ title }}</h1>
-    <div class="subtitle">Module : <strong>{{ module_name | default(domain) }}</strong></div>
+<div class="sheet">
+  <div class="dossier-tab">TP · {{ domain_label | default(domain | default("Générique")) | upper }}</div>
+  <div class="logo-wrap">
+    {% if logo_path %}
+    <img src="{{ logo_path }}" alt="Logo" class="cover-logo"/>
+    {% else %}
+    <div class="cover-logo cover-logo--placeholder" aria-hidden="true"></div>
+    {% endif %}
+  </div>
 
-    <!-- CARTOUCHE D'INFORMATIONS -->
-    <div class="info-grid">
-        <div class="info-row">
-            <div class="info-cell">
-                <span class="info-label">Étudiant(e)</span>
-                <span class="info-value">{{ student_name }}</span>
-            </div>
-            <div class="info-cell">
-                <span class="info-label">Groupe / Binôme</span>
-                <span class="info-value">{{ group_name | default('Binôme / Individuel') }}</span>
-            </div>
-        </div>
-        <div class="info-row">
-            <div class="info-cell">
-                <span class="info-label">Formation</span>
-                <span class="info-value">{{ domain }}</span>
-            </div>
-            <div class="info-cell">
-                <span class="info-label">Établissement</span>
-                <span class="info-value">{{ institution }}</span>
-            </div>
-        </div>
-        <div class="info-row">
-            <div class="info-cell">
-                <span class="info-label">Enseignant / Encadrant</span>
-                <span class="info-value">{{ supervisor_name }}</span>
-            </div>
-            <div class="info-cell">
-                <span class="info-label">Lieu / Salle</span>
-                <span class="info-value">{{ room_name | default('Laboratoire TP') }}</span>
-            </div>
-        </div>
-        <div class="info-row">
-            <div class="info-cell">
-                <span class="info-label">Durée de la séance</span>
-                <span class="info-value">{{ session_duration | default('2 heures') }}</span>
-            </div>
-            <div class="info-cell">
-                <span class="info-label">Date de séance</span>
-                <span class="info-value">{{ session_date | default('Séance courante') }}</span>
-            </div>
-        </div>
+  <!-- ============================= PAGE DE GARDE ============================= -->
+  <section class="cover">
+    <div class="eyebrow">Compte-rendu de travaux pratiques{% if domain_label %} · {{ domain_label }}{% endif %}</div>
+    <h1>{{ tp_title | default(title | default("Compte-rendu de Travaux Pratiques")) }}</h1>
+    <p class="subtitle">Module : <strong>{{ module_name | default(domain_label | default("Enseignement pratique")) }}</strong></p>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <dt>Étudiant(e)</dt>
+        <dd>{{ student_name | default("Prénom Nom") }}</dd>
+      </div>
+      {% if student_number %}
+      <div class="cover-meta-item">
+        <dt>Numéro étudiant</dt>
+        <dd>{{ student_number }}</dd>
+      </div>
+      {% endif %}
+      <div class="cover-meta-item">
+        <dt>Groupe / Binôme</dt>
+        <dd>{{ group_name | default("Individuel / Binôme") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Formation</dt>
+        <dd>{{ student_formation | default(domain_label | default("Parcours de formation")) }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Établissement</dt>
+        <dd>{{ institution | default(student_school | default("Établissement / Université")) }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Enseignant / Encadrant</dt>
+        <dd>{{ supervisor_name | default("Nom de l'enseignant") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Lieu / Salle</dt>
+        <dd>{{ room_name | default(location | default("Laboratoire TP")) }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Date de séance</dt>
+        <dd>{{ session_date | default("Séance courante") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Durée</dt>
+        <dd>{{ session_duration | default(duration_label | default("2 heures")) }}</dd>
+      </div>
     </div>
+  </section>
 
-    <!-- 01 OBJECTIFS -->
-    <div class="section-title"><span class="section-num">01</span>Objectifs du TP</div>
-    <p>Objectifs pédagogiques et techniques visés par cette séance de travaux pratiques :</p>
-    <ul>
-        <li>Objectif pédagogique n°1 : Prise en main de l'environnement de travail.</li>
-        <li>Objectif pédagogique n°2 : Application des concepts théoriques étudiés en cours.</li>
-        <li>Objectif pédagogique n°3 : Validation expérimentale et interprétation des métriques.</li>
-    </ul>
+  <!-- ============================= CORPS DU COMPTE-RENDU ============================= -->
+  <div class="content">
 
-    <!-- 02 MATÉRIEL ET ENVIRONNEMENT -->
-    <div class="section-title"><span class="section-num">02</span>Matériel et environnement</div>
-    <div class="tp-box">
-        Liste du matériel, des logiciels, des jeux de données ou de l'environnement utilisés pour réaliser le TP (ex: machines virtuelles, scanners, compilateurs, etc.).
-    </div>
+    <!-- SECTION 01 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">01</span>Objectifs du TP</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Formulez clairement les buts poursuivis et les notions appliquées lors de cette séance.
+      </div>
+      <div class="writing-area">
+        <p>{{ objectives_intro | default("Les principaux objectifs visés par cette séance de travaux pratiques sont :") }}</p>
+        <ul class="report-list">
+          {% for objective in objectives | default([
+            "Prendre en main l'environnement matériel et logiciel dédié à la séance.",
+            "Appliquer les méthodes et protocoles expérimentaux ou techniques prescrits.",
+            "Analyser et interpréter les résultats expérimentaux obtenus."
+          ]) %}
+          <li>{{ objective }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
 
-    <!-- 03 PROTOCOLE -->
-    <div class="section-title"><span class="section-num">03</span>Protocole / Démarche suivie</div>
-    <p>Description pas à pas de la méthode ou du protocole suivi pendant la séance :</p>
-    <ul>
-        <li><strong>Étape 1 :</strong> Configuration initiale de l'environnement et vérification des prérequis.</li>
-        <li><strong>Étape 2 :</strong> Exécution des commandes et des tests de manipulation.</li>
-        <li><strong>Étape 3 :</strong> Collecte des journaux (logs) et des captures de résultats.</li>
-    </ul>
+    <!-- SECTION 02 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">02</span>Environnement technique & Matériel</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Listez le matériel, les logiciels, les équipements et les configurations utilisés.
+      </div>
+      <div class="writing-area">
+        {% if configuration_details %}
+        <div class="callout">
+          <span class="callout-label">Configuration système & matériel</span>
+          {{ configuration_details }}
+        </div>
+        {% endif %}
+        <ul class="report-list">
+          {% for item in materials | default([
+            "Équipements et postes de travail de laboratoire.",
+            "Logiciels spécialisés, environnements d'exécution ou compilateurs.",
+            "Documentation technique et guides de la séance."
+          ]) %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
 
-    <!-- 04 RÉSULTATS -->
-    <div class="section-title"><span class="section-num">04</span>Résultats obtenus</div>
-    <p>Présentation factuelle des résultats obtenus lors de la manipulation ou de l'expérimentation.</p>
+    <!-- SECTION 03 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">03</span>Protocole & Démarche</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Décrivez pas à pas les étapes de la manipulation ou des travaux effectués.
+      </div>
+      <div class="writing-area">
+        <ol class="report-list" style="list-style: none; padding-left: 0;">
+          {% for step in protocol_steps | default(steps | default([
+            "Mise en place et vérification de l'environnement de travail.",
+            "Exécution des étapes expérimentales ou de configuration requises.",
+            "Relevé des métriques, mesures et observations.",
+            "Contrôle de la conformité des résultats obtenus."
+          ])) %}
+          <li style="margin-bottom: 8px;"><strong>Étape {{ loop.index }} :</strong> {{ step }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    </section>
 
-    <!-- 05 ANALYSE ET DISCUSSION -->
-    <div class="section-title"><span class="section-num">05</span>Analyse et discussion</div>
-    <p>Interprétation des résultats obtenus, écarts éventuels par rapport aux attentes, et explication des causes possibles.</p>
+    {% if code_sample %}
+    <section class="section-block">
+      <h3 class="sub-title">{{ code_sample.title | default("Extrait de code ou de configuration") }}</h3>
+      <div class="code-block">{{ code_sample.content }}</div>
+    </section>
+    {% endif %}
 
-    <!-- 07 CONCLUSION -->
-    <div class="section-title"><span class="section-num">07</span>Conclusion</div>
-    <div class="conclusion-box">
-        Bilan de la séance : les objectifs principaux ont été atteints. Cette séance a permis de mobiliser des compétences pratiques et de consolider les acquis théoriques pour la suite du parcours de formation.
-    </div>
+    <!-- SECTION 04 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">04</span>Résultats obtenus</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Présentez les données collectées, mesures, sorties de programmes ou captures de résultats.
+      </div>
+      <div class="writing-area">
+        <p>{{ results_summary | default(results_text | default("Les manipulations effectuées ont permis de recueillir l'ensemble des données attendues. Les réponses observées concordent avec les hypothèses de départ et valident le protocole suivi.")) }}</p>
+      </div>
+    </section>
+
+    <!-- SECTION 05 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">05</span>Analyse & Discussion</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Interprétez les résultats, discutez des écarts éventuels par rapport à la théorie et évaluez la précision des mesures.
+      </div>
+      <div class="writing-area">
+        <p>{{ analysis_summary | default(analysis_text | default("L'analyse des résultats met en évidence la cohérence de la démarche avec les modèles théoriques étudiés. Les éventuels écarts s'expliquent par les tolérances du matériel et les conditions expérimentales.")) }}</p>
+      </div>
+    </section>
+
+    <!-- SECTION 06 -->
+    {% if difficulties %}
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">06</span>Difficultés rencontrées</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Mentionnez les obstacles techniques ou méthodologiques survenus et les ajustements effectués.
+      </div>
+      <div class="writing-area">
+        <ul class="report-list">
+          {% for item in difficulties %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- SECTION 07 (ou 06 si pas de difficultés) -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ conclusion_number | default("06") }}</span>Conclusion & Bilan</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Résumez les conclusions de la séance et le bilan des apprentissages.
+      </div>
+      <div class="writing-area">
+        {% if conclusion_summary or conclusion_text %}
+        <div class="callout">
+          <span class="callout-label">Bilan synthétique</span>
+          {{ conclusion_summary | default(conclusion_text) }}
+        </div>
+        {% else %}
+        <p>Cette séance de travaux pratiques s'est achevée avec succès en répondant aux objectifs pédagogiques fixés. Elle a permis de consolider l'assimilation pratique des connaissances théoriques du module.</p>
+        {% endif %}
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================= PIED DE PAGE ============================= -->
+  <div class="footer">
+    <span>Compte-rendu de TP — {{ student_name | default("Prénom Nom") }}</span>
+    <span>Généré avec Universa Reports · {{ submission_date | default(generated_date | default("JJ/MM/AAAA")) }}</span>
+  </div>
+</div>
 
 </body>
 </html>

@@ -1,129 +1,270 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ lang | default('fr') }}">
 <head>
-<meta charset="UTF-8">
-<title>Rapport de stage — {{ student_name | default("Prénom Nom") }}</title>
-<link rel="stylesheet" href="{{ styles_path | default('../../assets/styles.css') }}">
+  <meta charset="UTF-8">
+  <title>{{ title | default(report_title | default("Rapport de stage — " ~ (student_name | default("Étudiant")))) }}</title>
+  {% if styles_inline %}
+  <style>{{ styles_inline | safe }}</style>
+  {% else %}
+  <link rel="stylesheet" href="{{ styles_path | default('../../assets/styles.css') }}">
+  {% endif %}
 </head>
 <body class="domain-{{ domain_slug | default('generique') }}">
 
 <div class="sheet">
   <div class="dossier-tab">{{ domain_label | default('Rapport de stage') }}</div>
+  <div class="logo-wrap">
+    {% if logo_path %}
+    <img src="{{ logo_path }}" alt="Logo" class="cover-logo"/>
+    {% else %}
+    <div class="cover-logo cover-logo--placeholder" aria-hidden="true"></div>
+    {% endif %}
+  </div>
 
   <!-- ============================= PAGE DE GARDE ============================= -->
   <section class="cover">
-    <div class="eyebrow">{{ report_type_label | default("Rapport de stage") }} · {{ domain_label | default("") }}</div>
-    <h1>{{ report_title | default("Rapport de stage") }}</h1>
-    <p class="subtitle">{{ report_subtitle | default("Réalisé au sein de " ~ (company_name | default("{{ company_name }}"))) }}</p>
+    <div class="eyebrow">{{ report_type_label | default("Rapport de stage") }}{% if domain_label %} · {{ domain_label }}{% endif %}</div>
+    <h1>{{ report_title | default(title | default("Rapport de Stage")) }}</h1>
+    <p class="subtitle">{{ report_subtitle | default("Réalisé au sein de " ~ (company_name | default("l'entreprise d'accueil"))) }}</p>
 
-    <dl class="cover-meta">
-      <div><dt>Étudiant(e)</dt><dd>{{ student_name | default("Prénom Nom") }}</dd></div>
-      <div><dt>Formation</dt><dd>{{ student_formation | default("Intitulé de la formation") }}</dd></div>
-      <div><dt>Établissement</dt><dd>{{ student_school | default("Nom de l'établissement") }}</dd></div>
-      <div><dt>Année académique</dt><dd>{{ academic_year | default("2025 – 2026") }}</dd></div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <dt>Étudiant(e)</dt>
+        <dd>{{ student_name | default("Prénom Nom") }}</dd>
+      </div>
+      {% if student_number %}
+      <div class="cover-meta-item">
+        <dt>Numéro étudiant</dt>
+        <dd>{{ student_number }}</dd>
+      </div>
+      {% endif %}
+      <div class="cover-meta-item">
+        <dt>Formation</dt>
+        <dd>{{ student_formation | default("Intitulé de la formation") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Établissement</dt>
+        <dd>{{ student_school | default(institution | default("Nom de l'établissement")) }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Année académique</dt>
+        <dd>{{ academic_year | default("2025 – 2026") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Structure d'accueil</dt>
+        <dd>{{ company_name | default("Entreprise d'accueil") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Secteur d'activité</dt>
+        <dd>{{ company_sector | default("Secteur d'activité") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Tuteur professionnel</dt>
+        <dd>{{ tutor_name | default(supervisor_name | default("Nom du tuteur")) }}{% if tutor_title %}, {{ tutor_title }}{% endif %}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Tuteur académique</dt>
+        <dd>{{ academic_tutor_name | default("Nom du tuteur académique") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Période de stage</dt>
+        <dd>{{ period_start | default("JJ/MM/AAAA") }} – {{ period_end | default("JJ/MM/AAAA") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Durée</dt>
+        <dd>{{ duration_label | default("Non spécifiée") }}</dd>
+      </div>
+    </div>
+  </section>
 
-      <div><dt>Structure d'accueil</dt><dd>{{ company_name | default("{{ company_name }}") }}</dd></div>
-      <div><dt>Secteur d'activité</dt><dd>{{ company_sector | default("Secteur d'activité") }}</dd></div>
-      <div><dt>Tuteur professionnel</dt><dd>{{ tutor_name | default("Nom du tuteur") }}{% if tutor_title %}, {{ tutor_title }}{% endif %}</dd></div>
-      <div><dt>Tuteur académique</dt><dd>{{ academic_tutor_name | default("Nom du tuteur académique") }}</dd></div>
+  <!-- ============================= RÉSUMÉ & SOMMAIRE ============================= -->
+  {% if abstract %}
+  <section class="abstract">
+    <h2 class="section-title">Résumé</h2>
+    <p>{{ abstract }}</p>
+    {% if keywords_list %}
+    <p class="keywords"><strong>Mots-clés :</strong> {% for k in keywords_list %}{{ k }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {% elif keywords %}
+    <p class="keywords"><strong>Mots-clés :</strong> {{ keywords }}</p>
+    {% endif %}
+  </section>
+  {% endif %}
 
-      <div><dt>Période de stage</dt><dd>{{ period_start | default("JJ/MM/AAAA") }} – {{ period_end | default("JJ/MM/AAAA") }}</dd></div>
-      <div><dt>Durée</dt><dd>{{ duration_label | default("X semaines") }}</dd></div>
-    </dl>
+  <section class="toc">
+    <h2 class="section-title">SOMMAIRE</h2>
+    <ol class="toc-list">
+      {% for num, t_title in toc_entries %}
+      <li><span class="toc-num">{{ num }}</span> {{ t_title }}</li>
+      {% endfor %}
+    </ol>
   </section>
 
   <!-- ============================= CORPS DU RAPPORT ============================= -->
   <div class="content">
 
-    <h2 class="section-title"><span class="num">01</span>Présentation de la structure d'accueil</h2>
-    <p>{{ company_description | default("Description générale de l'entreprise ou de l'organisme d'accueil : activité, taille, positionnement, organisation du service dans lequel le stage s'est déroulé.") }}</p>
-    {% if company_context %}
-    <div class="callout">
-      <span class="callout-label">Contexte</span>
-      {{ company_context }}
-    </div>
-    {% endif %}
-
-    <h2 class="section-title"><span class="num">02</span>Objectifs du stage</h2>
-    <p>{{ objectives_intro | default("Objectifs fixés au début du stage, en cohérence avec la formation suivie et les attentes de la structure d'accueil.") }}</p>
-    {% if objectives %}
-    <ul class="report-list">
-      {% for objective in objectives %}
-      <li>{{ objective }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-
-    <h2 class="section-title"><span class="num">03</span>Missions réalisées</h2>
-    {% if missions %}
-      {% for mission in missions %}
-      <div class="mission-card">
-        <div class="mission-title">{{ mission.title }}</div>
-        {% if mission.period %}<div class="mission-period">{{ mission.period }}</div>{% endif %}
-        <p>{{ mission.description }}</p>
+    <!-- SECTION 01 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">01</span>Présentation de la structure d'accueil</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Présentez l'organisation d'accueil, son secteur d'activité, sa taille, ses services et l'équipe dans laquelle vous avez évolué.
       </div>
-      {% endfor %}
-    {% else %}
-    <div class="mission-card">
-      <div class="mission-title">Intitulé de la mission</div>
-      <div class="mission-period">Période</div>
-      <p>Description détaillée de la mission confiée, du contexte, des actions menées et du résultat obtenu.</p>
-    </div>
-    {% endif %}
+      <div class="writing-area">
+        <p>{{ company_description | default("Présentation générale de l'organisation d'accueil, de ses missions principales et de son positionnement dans son secteur d'activité.") }}</p>
+        {% if company_context %}
+        <div class="callout">
+          <span class="callout-label">Contexte général</span>
+          {{ company_context }}
+        </div>
+        {% endif %}
+      </div>
+    </section>
 
-    <h2 class="section-title"><span class="num">04</span>Méthodes et outils mobilisés</h2>
-    {% if tools %}
-    <ul class="report-list">
-      {% for tool in tools %}
-      <li>{{ tool }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>Liste des méthodes, référentiels ou outils utilisés au cours du stage (logiciels, méthodologies, procédures internes, etc.).</p>
-    {% endif %}
-
-    <h2 class="section-title"><span class="num">05</span>Compétences développées</h2>
-    <div class="two-col">
-      <div>
-        <h3 class="sub-title">Compétences techniques</h3>
+    <!-- SECTION 02 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">02</span>Objectifs du stage</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Exposez les grands objectifs de votre stage et les résultats attendus par la structure d'accueil.
+      </div>
+      <div class="writing-area">
+        <p>{{ objectives_intro | default("Les principaux objectifs assignés pour cette période de stage s'articulent autour des axes suivants :") }}</p>
         <ul class="report-list">
-          {% for skill in skills_technical | default(["Compétence technique n°1", "Compétence technique n°2", "Compétence technique n°3"]) %}
-          <li>{{ skill }}</li>
+          {% for objective in objectives | default([
+            "Découvrir l'organisation interne et les méthodes de travail de la structure.",
+            "Prendre en charge des missions opérationnelles concrètes sous la supervision du tuteur.",
+            "Développer des compétences pratiques en lien avec le cursus de formation."
+          ]) %}
+          <li>{{ objective }}</li>
           {% endfor %}
         </ul>
       </div>
-      <div>
-        <h3 class="sub-title">Compétences relationnelles et méthodologiques</h3>
+    </section>
+
+    <!-- SECTION 03 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">03</span>Missions réalisées</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Détaillez le déroulement des activités confiées, chronologiquement ou par thématique.
+      </div>
+
+      {% if missions %}
+        {% for mission in missions %}
+        <div class="mission-card">
+          <div class="mission-title">{{ mission.title }}</div>
+          {% if mission.period %}<div class="mission-period">{{ mission.period }}</div>{% endif %}
+          <p>{{ mission.description }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="mission-card">
+          <div class="mission-title">Phase d'intégration et d'observation</div>
+          <div class="mission-period">Phase 1</div>
+          <p>Prise en main de l'environnement de travail, découverte des outils internes et des procédures opérationnelles.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">Missions principales et réalisation des projets</div>
+          <div class="mission-period">Phase 2</div>
+          <p>Exécution des tâches confiées, participation aux réunions d'équipe et suivi de l'avancement auprès du tuteur professionnel.</p>
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- SECTION 04 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">04</span>Méthodes et outils mobilisés</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Énumérez les logiciels, équipements, méthodologies et référentiels utilisés au quotidien.
+      </div>
+      <div class="writing-area">
         <ul class="report-list">
-          {% for skill in skills_soft | default(["Communication au sein d'une équipe pluridisciplinaire.", "Organisation et gestion des priorités.", "Adaptation à un nouvel environnement professionnel."]) %}
-          <li>{{ skill }}</li>
+          {% for tool in tools | default([
+            "Outils de bureautique et de gestion de documents.",
+            "Logiciels professionnels et applications métiers dédiés.",
+            "Méthodes d'organisation et de suivi de projets."
+          ]) %}
+          <li>{{ tool }}</li>
           {% endfor %}
         </ul>
       </div>
-    </div>
+    </section>
 
-    {% if difficulties %}
-    <h2 class="section-title"><span class="num">06</span>Difficultés rencontrées et solutions apportées</h2>
-    <ul class="report-list">
-      {% for item in difficulties %}
-      <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
+    <!-- SECTION 05 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">05</span>Compétences développées</h2>
+      <div class="two-col">
+        <div>
+          <h3 class="sub-title">Compétences techniques</h3>
+          <ul class="report-list">
+            {% for skill in skills_technical | default([
+              "Mise en pratique des concepts théoriques étudiés en formation.",
+              "Utilisation d'outils et de logiciels professionnels spécialisés.",
+              "Application des règles et normes en vigueur dans le secteur."
+            ]) %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h3 class="sub-title">Compétences relationnelles & Méthode</h3>
+          <ul class="report-list">
+            {% for skill in skills_soft | default([
+              "Adaptation à un environnement professionnel structuré.",
+              "Travail en équipe et communication avec différents intervenants.",
+              "Gestion du temps, autonomie et respect des échéances."
+            ]) %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 06 -->
+    {% if difficulties or not missions %}
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">06</span>Difficultés rencontrées et solutions apportées</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Présentez les difficultés rencontrées (techniques, organisationnelles ou logistiques) et la façon dont vous les avez surmontées.
+      </div>
+      <div class="writing-area">
+        <ul class="report-list">
+          {% for item in difficulties | default([
+            "Adaptation initiale aux outils internes : surmontée grâce à l'accompagnement du tuteur et à la documentation.",
+            "Gestion des imprévus et priorisation des tâches : résolue par un point d'étape régulier avec l'équipe."
+          ]) %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
     {% endif %}
 
+    <!-- SECTIONS PERSONNALISÉES -->
     {% for custom in custom_sections | default([]) %}
-    <h2 class="section-title"><span class="num">{{ "%02d" | format(7 + loop.index0) }}</span>{{ custom.title }}</h2>
-    <p>{{ custom.content }}</p>
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ "%02d" | format(7 + loop.index0) }}</span>{{ custom.title }}</h2>
+      <div class="writing-area">
+        <p>{{ custom.content }}</p>
+      </div>
+    </section>
     {% endfor %}
 
-    <h2 class="section-title"><span class="num">{{ conclusion_number | default("07") }}</span>Conclusion</h2>
-    <p>{{ conclusion_text | default("Bilan du stage chez " ~ (company_name | default("{{ company_name }}")) ~ " : apports professionnels et personnels, mise en perspective avec le projet de formation et les projets futurs de l'étudiant(e).") }}</p>
+    <!-- SECTION CONCLUSION -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ conclusion_number | default("07") }}</span>Conclusion</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Concluez en dressant un bilan global de cette expérience et son impact sur votre projet d'études ou professionnel.
+      </div>
+      <div class="writing-area">
+        <p>{{ conclusion_text | default("Ce stage au sein de " ~ (company_name | default("la structure d'accueil")) ~ " a constitué une expérience très enrichissante. Il m'a permis d'appréhender la réalité du terrain, de consolider mes compétences et de préciser mes choix d'orientation future.") }}</p>
+      </div>
+    </section>
 
   </div>
 
+  <!-- ============================= PIED DE PAGE ============================= -->
   <div class="footer">
     <span>{{ report_type_label | default("Rapport de stage") }} — {{ student_name | default("Prénom Nom") }}</span>
-    <span>Généré avec Universa Reports · {{ generated_date | default("JJ/MM/AAAA") }}</span>
+    <span>Généré avec Universa Reports · {{ submission_date | default(generated_date | default("JJ/MM/AAAA")) }}</span>
   </div>
 </div>
 

@@ -1,10 +1,273 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <title>Stage - Development</title>
-  </head>
-  <body>
-    <h1>Rapport stage development</h1>
-  </body>
+<!DOCTYPE html>
+<html lang="{{ lang | default('fr') }}">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title | default("Rapport de stage — Développement Logiciel — " ~ (student_name | default("Étudiant"))) }}</title>
+  {% if styles_inline %}
+  <style>{{ styles_inline | safe }}</style>
+  {% else %}
+  <link rel="stylesheet" href="{{ styles_path | default('../../assets/styles.css') }}">
+  {% endif %}
+</head>
+<body class="domain-developpement">
+
+<div class="sheet">
+  <div class="dossier-tab">Développement Logiciel</div>
+  <div class="logo-wrap">
+    {% if logo_path %}
+    <img src="{{ logo_path }}" alt="Logo" class="cover-logo"/>
+    {% else %}
+    <div class="cover-logo cover-logo--placeholder" aria-hidden="true"></div>
+    {% endif %}
+  </div>
+
+  <!-- ============================= PAGE DE GARDE ============================= -->
+  <section class="cover">
+    <div class="eyebrow">Rapport de stage · Développement Logiciel & Architecture</div>
+    <h1>{{ title if title else "Rapport de Stage en Développement Logiciel" }}</h1>
+    <p class="subtitle">Conception & Implémentation — {{ company_name | default("Structure d'accueil") }}</p>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <dt>Étudiant(e)</dt>
+        <dd>{{ student_name | default("Prénom Nom") }}</dd>
+      </div>
+      {% if student_number %}
+      <div class="cover-meta-item">
+        <dt>Numéro étudiant</dt>
+        <dd>{{ student_number }}</dd>
+      </div>
+      {% endif %}
+      <div class="cover-meta-item">
+        <dt>Formation</dt>
+        <dd>{{ student_formation | default("Génie Logiciel & Développement") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Établissement</dt>
+        <dd>{{ institution | default(student_school | default("Établissement / Université")) }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Année académique</dt>
+        <dd>{{ academic_year | default("2025 – 2026") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Structure d'accueil</dt>
+        <dd>{{ company_name | default("Entreprise d'accueil") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Service</dt>
+        <dd>{{ department | default("Équipe Pôle R&D / Tech") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Tuteur professionnel</dt>
+        <dd>{{ tutor_name | default(supervisor_name | default("Nom du tuteur")) }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Tuteur académique</dt>
+        <dd>{{ academic_tutor_name | default("Nom du tuteur académique") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Période de stage</dt>
+        <dd>{{ period_start | default("JJ/MM/AAAA") }} – {{ period_end | default("JJ/MM/AAAA") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Durée</dt>
+        <dd>{{ duration_label | default("Non spécifiée") }}</dd>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= RÉSUMÉ & SOMMAIRE ============================= -->
+  {% if abstract %}
+  <section class="abstract">
+    <h2 class="section-title">Résumé</h2>
+    <p>{{ abstract }}</p>
+    {% if keywords_list %}
+    <p class="keywords"><strong>Mots-clés :</strong> {% for k in keywords_list %}{{ k }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {% elif keywords %}
+    <p class="keywords"><strong>Mots-clés :</strong> {{ keywords }}</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <section class="toc">
+    <h2 class="section-title">SOMMAIRE</h2>
+    <ol class="toc-list">
+      {% for num, t_title in toc_entries %}
+      <li><span class="toc-num">{{ num }}</span> {{ t_title }}</li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <!-- ============================= CORPS DU RAPPORT ============================= -->
+  <div class="content">
+
+    <!-- SECTION 01 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">01</span>Présentation de la structure d'accueil</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Présentez l'entreprise, ses produits/services, la composition de l'équipe technique et l'organisation du pôle développement.
+      </div>
+      <div class="writing-area">
+        <p>{{ company_description | default("Présentation générale de l'organisation, de ses activités, de la stack technique globale et du positionnement de l'équipe de développement au sein de l'entreprise.") }}</p>
+      </div>
+    </section>
+
+    <!-- SECTION 02 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">02</span>Objectifs du stage</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Décrivez les objectifs techniques et fonctionnels fixés pour votre stage.
+      </div>
+      <div class="writing-area">
+        <p>Les objectifs principaux fixés pour cette période de stage s'articulent autour des axes suivants :</p>
+        <ul class="report-list">
+          {% for objective in objectives | default([
+            "Monter en compétence sur la stack technique et l'architecture logicielle de l'entreprise.",
+            "Participer au développement de nouvelles fonctionnalités de la conception au déploiement.",
+            "Appliquer les bonnes pratiques de développement (tests unitaires, revues de code, CI/CD)."
+          ]) %}
+          <li>{{ objective }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 03 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">03</span>Missions réalisées</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Détaillez les projets développés, les fonctionnalités intégrées et les choix d'architecture.
+      </div>
+
+      {% if missions %}
+        {% for mission in missions %}
+        <div class="mission-card">
+          <div class="mission-title">{{ mission.title }}</div>
+          {% if mission.period %}<div class="mission-period">{{ mission.period }}</div>{% endif %}
+          <p>{{ mission.description }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="mission-card">
+          <div class="mission-title">Analyse du besoin & Conception technique</div>
+          <div class="mission-period">Phase 1 (Semaines 1 – 3)</div>
+          <p>Étude des spécifications fonctionnelles, modélisation de la base de données (UML / Merise) et choix des composants logiciels.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">Développement Back-End / Front-End</div>
+          <div class="mission-period">Phase 2 (Semaines 3 – 6)</div>
+          <p>Implémentation des API REST/GraphQL, création des composants d'interface utilisateur et intégration avec les services tiers.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">Tests, Recette et Déploiement</div>
+          <div class="mission-period">Phase 3 (Semaines 6 – 8)</div>
+          <p>Rédaction des tests unitaires et d'intégration, correction de bugs et participation au pipeline de déploiement continu (CI/CD).</p>
+        </div>
+      {% endif %}
+    </section>
+
+    {% if code_sample %}
+    <section class="section-block">
+      <h3 class="sub-title">{{ code_sample.title | default("Extrait de code ou d'architecture") }}</h3>
+      <div class="code-block">{{ code_sample.content }}</div>
+    </section>
+    {% endif %}
+
+    <!-- SECTION 04 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">04</span>Outils et technologies utilisés</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Listez les langages, frameworks, BDD, outils de versioning et méthodes de travail.
+      </div>
+      <div class="writing-area">
+        <ul class="report-list">
+          {% for tool in tools | default([
+            "Langages & Environnement : Python, TypeScript / JavaScript, HTML5/CSS3.",
+            "Frameworks & Librairies : React / Vite, Node.js / Express, FastAPI ou Django.",
+            "Bases de données & ORM : PostgreSQL, MongoDB, Prisma / SQLAlchemy.",
+            "Versioning & DevOps : Git / GitHub, Docker, CI/CD Actions.",
+            "Méthodologie & IDE : Méthode Agile (Scrum/Kanban), VS Code."
+          ]) %}
+          <li>{{ tool }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 05 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">05</span>Compétences développées</h2>
+      <div class="two-col">
+        <div>
+          <h3 class="sub-title">Compétences techniques</h3>
+          <ul class="report-list">
+            {% for skill in skills_technical | default([
+              "Conception d'architectures applicatives modulaires et maintenables.",
+              "Maîtrise des concepts d'API RESTful et de gestion d'état.",
+              "Pratique poussée des tests logiciels et du débogage méthodique.",
+              "Utilisation avancée du contrôle de version avec Git."
+            ]) %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h3 class="sub-title">Compétences relationnelles & Méthode</h3>
+          <ul class="report-list">
+            {% for skill in skills_soft | default([
+              "Travail en équipe selon les rites Agiles (Daily, Sprint Review).",
+              "Communication claire lors des revues de code (Code Reviews).",
+              "Capacité à découper un problème complexe en tâches simples.",
+              "Autonomie dans la recherche documentaire et la résolution de bugs."
+            ]) %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 06 -->
+    {% if difficulties or not missions %}
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">06</span>Difficultés rencontrées et solutions apportées</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Expliquez les défis techniques (bugs complexes, refactoring, dette technique) et votre démarche pour les résoudre.
+      </div>
+      <div class="writing-area">
+        <ul class="report-list">
+          {% for item in difficulties | default([
+            "Prise en main du legacy code : lecture attentive de la documentation et échange avec les développeurs senior.",
+            "Gestion des performances de requêtes : optimisation des index de base de données et implémentation d'un système de cache.",
+            "Conflits de fusion Git lors des livraisons : adoption d'une stratégie stricte de requêtes de tirage (Pull Requests)."
+          ]) %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- SECTION 07 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ conclusion_number | default("07") }}</span>Conclusion</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Dressez le bilan de votre expérience, l'impact sur votre savoir-faire et vos perspectives d'avenir.
+      </div>
+      <div class="writing-area">
+        <p>{{ conclusion_text | default("Ce stage en développement logiciel au sein de " ~ (company_name | default("la structure d'accueil")) ~ " a constitué une étape clé de ma formation. Il m'a permis de mettre en pratique les concepts théoriques sur des projets concrets en production. Cette expérience confirme mon souhait d'évoluer vers les métiers de la conception logicielle et de l'architecture applicative.") }}</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================= PIED DE PAGE ============================= -->
+  <div class="footer">
+    <span>Rapport de stage · Développement Logiciel — {{ student_name | default("Prénom Nom") }}</span>
+    <span>Généré avec Universa Reports · {{ submission_date | default(generated_date | default("JJ/MM/AAAA")) }}</span>
+  </div>
+</div>
+
+</body>
 </html>

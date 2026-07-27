@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default('fr') }}">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title | default("Rapport de Projet — " ~ (report_title | default("Titre du projet"))) }}</title>
+  {% if styles_inline %}
+  <style>{{ styles_inline | safe }}</style>
+  {% else %}
+  <link rel="stylesheet" href="{{ styles_path | default('../../assets/styles.css') }}">
+  {% endif %}
+</head>
+<body class="domain-{{ domain_slug | default('generique') }}">
+
+<div class="sheet">
+  <div class="dossier-tab">{{ domain_label | default('Rapport de Projet') }}</div>
+  <div class="logo-wrap">
+    {% if logo_path %}
+    <img src="{{ logo_path }}" alt="Logo" class="cover-logo"/>
+    {% else %}
+    <div class="cover-logo cover-logo--placeholder" aria-hidden="true"></div>
+    {% endif %}
+  </div>
+
+  <!-- ============================= PAGE DE GARDE ============================= -->
+  <section class="cover">
+    <div class="eyebrow">{{ report_type_label | default("Rapport de Projet") }}{% if domain_label %} · {{ domain_label }}{% endif %}</div>
+    <h1>{{ report_title | default(title | default("Rapport de Projet")) }}</h1>
+    <p class="subtitle">{{ report_subtitle | default("Projet réalisé" ~ (" pour " ~ company_name if company_name and company_name != "N/A" else " dans le cadre du cursus académique")) }}</p>
+
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <dt>Chef de projet / Étudiant(e)</dt>
+        <dd>{{ student_name | default("Prénom Nom") }}</dd>
+      </div>
+      {% if student_number %}
+      <div class="cover-meta-item">
+        <dt>Numéro étudiant</dt>
+        <dd>{{ student_number }}</dd>
+      </div>
+      {% endif %}
+      <div class="cover-meta-item">
+        <dt>Formation</dt>
+        <dd>{{ student_formation | default("Intitulé de la formation") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Établissement</dt>
+        <dd>{{ institution | default(student_school | default("Nom de l'établissement")) }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Année académique</dt>
+        <dd>{{ academic_year | default("2025 – 2026") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Type de projet</dt>
+        <dd>{{ project_type | default("Académique / Professionnel") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Client / Commanditaire</dt>
+        <dd>{{ company_name | default("N/A") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Encadrant / Tuteur</dt>
+        <dd>{{ supervisor_name | default("Nom de l'encadrant") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Budget alloué</dt>
+        <dd>{{ budget | default("N/A") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Période du projet</dt>
+        <dd>{{ period_start | default("JJ/MM/AAAA") }} – {{ period_end | default("JJ/MM/AAAA") }}</dd>
+      </div>
+      <div class="cover-meta-item">
+        <dt>Durée totale</dt>
+        <dd>{{ duration_label | default("X semaines") }}</dd>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= CORPS DU RAPPORT ============================= -->
+  <div class="content">
+
+    <!-- SECTION 01 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">01</span>Présentation du projet</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Présentez le contexte général du projet, la problématique initiale, les enjeux et le positionnement du projet.
+      </div>
+      <div class="writing-area">
+        <p>{{ project_description | default("Présentation générale du projet : contexte d'émergence, problématique traitée, enjeux pour le commanditaire ou l'organisme concerné, et positionnement du projet dans le parcours académique.") }}</p>
+        {% if project_context %}
+        <div class="callout">
+          <span class="callout-label">Contexte & Enjeux</span>
+          {{ project_context }}
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- SECTION 02 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">02</span>Objectifs du projet</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Exposez les objectifs principaux et secondaires fixés au lancement du projet.
+      </div>
+      <div class="writing-area">
+        <p>{{ objectives_intro | default("Objectifs fixés au lancement du projet, en cohérence avec le cahier des charges ou les attentes du commanditaire :") }}</p>
+        <ul class="report-list">
+          {% for objective in objectives | default([
+            "Répondre avec précision au besoin exprimé dans le cahier des charges.",
+            "Livrer une solution fonctionnelle, testée et documentée dans les délais impartis.",
+            "Assurer la qualité, la sécurité et la maintenabilité du livrable final."
+          ]) %}
+          <li>{{ objective }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 03 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">03</span>Équipe et organisation</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Détaillez la composition de l'équipe, la répartition des rôles et les méthodes de gestion de projet.
+      </div>
+      <div class="writing-area">
+        {% if team_members %}
+        <table class="data-table">
+          <thead>
+            <tr><th>Membre</th><th>Rôle</th><th>Responsabilités</th></tr>
+          </thead>
+          <tbody>
+            {% for member in team_members %}
+            <tr>
+              <td>{{ member.name }}</td>
+              <td>{{ member.role }}</td>
+              <td>{{ member.responsibilities | default("—") }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p>{{ team_description | default("Composition de l'équipe projet, répartition des rôles (chef de projet, développeur, designer, testeur...) et mode de coordination adopté (réunions régulières, méthodes agiles, outils collaboratifs).") }}</p>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- SECTION 04 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">04</span>Réalisations et missions</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Décrivez les grandes étapes de réalisation et les jalons clés du projet.
+      </div>
+      {% if missions %}
+        {% for mission in missions %}
+        <div class="mission-card">
+          <div class="mission-title">{{ mission.title }}</div>
+          {% if mission.period %}<div class="mission-period">{{ mission.period }}</div>{% endif %}
+          <p>{{ mission.description }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="mission-card">
+          <div class="mission-title">Phase 1 : Cadrage et analyse des besoins</div>
+          <div class="mission-period">Étape initiale</div>
+          <p>Recueil des besoins, rédaction du cahier des charges et définition du périmètre fonctionnel et technique du projet.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">Phase 2 : Conception et réalisation</div>
+          <div class="mission-period">Étape centrale</div>
+          <p>Conception de l'architecture, développement ou mise en œuvre des composants de la solution et recueil des retours intermédiaires.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">Phase 3 : Recette, livraison et clôture</div>
+          <div class="mission-period">Étape finale</div>
+          <p>Tests de recette globale, rédaction des documentations, livraison finale au commanditaire et bilan de projet.</p>
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- SECTION 05 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">05</span>Planning et déroulement</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Présentez le calendrier des tâches, les jalons de livraison et le suivi de l'avancement.
+      </div>
+      <div class="writing-area">
+        {% if planning %}
+        <table class="data-table">
+          <thead>
+            <tr><th>Phase / Tâche</th><th>Début</th><th>Fin</th><th>Statut</th></tr>
+          </thead>
+          <tbody>
+            {% for item in planning %}
+            <tr>
+              <td>{{ item.task }}</td>
+              <td>{{ item.start }}</td>
+              <td>{{ item.end }}</td>
+              <td>{{ item.status | default("Planifié") }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p>Insérer ici le planning prévisionnel et réel (ex: tableau de suivi ou jalons principaux), détaillant les phases du projet, leurs échéances et leur niveau d'avancement.</p>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- SECTION 06 (Conditionnelle si budget) -->
+    {% if budget_details %}
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">06</span>Budget détaillé</h2>
+      <div class="writing-area">
+        <table class="data-table">
+          <thead>
+            <tr><th>Poste de dépense</th><th>Montant prévu</th><th>Montant réel</th></tr>
+          </thead>
+          <tbody>
+            {% for line in budget_details %}
+            <tr>
+              <td>{{ line.item }}</td>
+              <td>{{ line.planned }}</td>
+              <td>{{ line.actual | default("—") }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- SECTION 07 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ risks_number | default("06") }}</span>Analyse des risques</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Listez les risques identifiés (techniques, humains, planning, budget) et les stratégies de prévention associées.
+      </div>
+      <div class="writing-area">
+        {% if risk_matrix %}
+        <table class="data-table">
+          <thead>
+            <tr><th>Risque identifié</th><th>Impact</th><th>Probabilité</th><th>Mesure de mitigation</th></tr>
+          </thead>
+          <tbody>
+            {% for risk in risk_matrix %}
+            <tr>
+              <td>{{ risk.asset | default(risk.threat) }}</td>
+              <td>{{ risk.impact | default(risk.severity) }}</td>
+              <td>{{ risk.probability | default("—") }}</td>
+              <td>{{ risk.remediation }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p>Identification des principaux risques liés au projet et plan d'action préventif pour garantir la maîtrise des coûts, des jalons et de la qualité technique.</p>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- SECTION 08 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ constraints_number | default("07") }}</span>Contraintes spécifiques</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Mentionnez les contraintes techniques, réglementaires, budgétaires ou d'infrastructure.
+      </div>
+      <div class="writing-area">
+        <ul class="report-list">
+          {% for constraint in constraints | default([
+            "Respect des délais de livraison imposés par le calendrier ou le commanditaire.",
+            "Ressources techniques, matérielles ou financières limitées.",
+            "Exigences d'interopérabilité, de sécurité ou de conformité avec les systèmes existants."
+          ]) %}
+          <li>{{ constraint }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 09 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ deliverables_number | default("08") }}</span>Livrables produits</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Énumérez l'ensemble des livrables finaux fournis (code source, documents, prototypes, guides).
+      </div>
+      <div class="writing-area">
+        <ul class="report-list">
+          {% for deliverable in deliverables | default([
+            "Cahier des charges et spécifications fonctionnelles / techniques.",
+            "Solution finale déployée ou exécutable (prototype, application, rapport d'étude).",
+            "Documentation technique d'architecture et manuel d'utilisation.",
+            "Rapport final de bilan et présentation de synthèse."
+          ]) %}
+          <li>{{ deliverable }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 10 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ skills_number | default("09") }}</span>Compétences développées</h2>
+      <div class="two-col">
+        <div>
+          <h3 class="sub-title">Compétences techniques</h3>
+          <ul class="report-list">
+            {% for skill in skills_technical | default([
+              "Gestion de projet, planification et suivi des livrables.",
+              "Maîtrise des outils, technologies et méthodes propres au projet.",
+              "Analyse et résolution de problèmes complexes en autonomie."
+            ]) %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h3 class="sub-title">Compétences relationnelles & Méthode</h3>
+          <ul class="report-list">
+            {% for skill in skills_soft | default([
+              "Travail en équipe et coordination des rôles.",
+              "Communication régulière avec le commanditaire et les parties prenantes.",
+              "Gestion du temps, prise d'initiative et rigueur méthodologique."
+            ]) %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 11 (Difficultés) -->
+    {% if difficulties %}
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ difficulties_number | default("10") }}</span>Difficultés rencontrées et solutions</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Résumez les imprévus ou blocages majeurs et les solutions concrètes mises en place.
+      </div>
+      <div class="writing-area">
+        <ul class="report-list">
+          {% for item in difficulties %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- SECTION 12 -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ evaluation_number | default("11") }}</span>Évaluation par rapport aux objectifs</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Évaluez l'écart entre le cahier des charges initial et les livrables réels.
+      </div>
+      <div class="writing-area">
+        <p>{{ evaluation_text | default("Bilan comparatif entre les objectifs fixés au lancement du projet et les résultats effectivement obtenus, accompagné d'une analyse critique des écarts et des succès constatés.") }}</p>
+      </div>
+    </section>
+
+    <!-- SECTIONS PERSONNALISÉES -->
+    {% for custom in custom_sections | default([]) %}
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ "%02d" | format(12 + loop.index0) }}</span>{{ custom.title }}</h2>
+      <div class="writing-area">
+        <p>{{ custom.content }}</p>
+      </div>
+    </section>
+    {% endfor %}
+
+    <!-- SECTION CONCLUSION -->
+    <section class="section-block">
+      <h2 class="section-title"><span class="toc-num">{{ conclusion_number | default("12") }}</span>Conclusion & Perspectives</h2>
+      <div class="guide-box">
+        💡 <strong>Consigne :</strong> Concluez en dressant le bilan général du projet et les évolutions futures envisageables.
+      </div>
+      <div class="writing-area">
+        <p>{{ conclusion_text | default("Bilan global du projet" ~ (" mené pour " ~ company_name if company_name and company_name != "N/A" else "") ~ " : synthèse des apports académiques et professionnels, niveau d'atteinte des objectifs, et pistes d'extension ou de maintenance de la solution.") }}</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================= PIED DE PAGE ============================= -->
+  <div class="footer">
+    <span>Rapport de Projet — {{ student_name | default("Prénom Nom") }}</span>
+    <span>Généré avec Universa Reports · {{ submission_date | default(generated_date | default("JJ/MM/AAAA")) }}</span>
+  </div>
+</div>
+
+</body>
+</html>

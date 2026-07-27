@@ -1,0 +1,2 @@
+[console_scripts]
+universa-reports = universa_reports.cli:main
